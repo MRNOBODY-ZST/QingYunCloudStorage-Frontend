@@ -1,22 +1,22 @@
 <template>
-    <div class="flex min-h-screen flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="flex min-h-screen flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gray-50">
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
             <img
-                class="mx-auto h-10 w-auto"
-                src="https://tailwindui.starxg.com/plus/img/logos/mark.svg?color=indigo&shade=600"
-                alt="Your Company"
+                class="mx-auto h-32 w-auto"
+                :src=piggyHappy
+                alt="Piggy Happy"
             />
-            <h2 class="mt-6 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-                Sign in to your account
+            <h2 class="mt-4 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+                登录网盘账户
             </h2>
         </div>
 
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-            <div class="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
+            <div class="bg-white px-6 py-12 shadow-lg sm:rounded-lg sm:px-12">
                 <form class="space-y-6" action="#" method="POST">
                     <div>
                         <label for="email" class="block text-sm/6 font-medium text-gray-900"
-                            >Email address</label
+                            >邮箱地址</label
                         >
                         <div class="mt-2">
                             <input
@@ -24,7 +24,7 @@
                                 name="email"
                                 id="email"
                                 autocomplete="email"
-                                required="true"
+                                :required="true"
                                 class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                             />
                         </div>
@@ -40,7 +40,7 @@
                                 name="password"
                                 id="password"
                                 autocomplete="current-password"
-                                required="true"
+                                :required="true"
                                 class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                             />
                         </div>
@@ -168,3 +168,7 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+import piggyHappy from "@/assets/image/piggy/piggy_happy.gif"
+</script>
