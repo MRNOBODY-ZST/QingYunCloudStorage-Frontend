@@ -14,30 +14,32 @@ export interface User {
 }
 
 export const useUserStore = defineStore('user', () => {
-    const token = ref<string | null>(localStorage.getItem("user"));
-    const user = ref<User | null>((() => {
-        const storedUser = localStorage.getItem("user");
-        if(storedUser) {
-            try {
-                return JSON.parse(storedUser);
-            } catch (error) {
-                console.log(error);
-                return null;
+    const token = ref<string | null>(localStorage.getItem('user'))
+    const user = ref<User | null>(
+        (() => {
+            const storedUser = localStorage.getItem('user')
+            if (storedUser) {
+                try {
+                    return JSON.parse(storedUser)
+                } catch (error) {
+                    console.log(error)
+                    return null
+                }
             }
-        }
-        return null;
-    })())
+            return null
+        })(),
+    )
 
     const isLoggedIn = computed(() => !!token.value)
 
     function setUser(newUser: User) {
-        user.value = newUser;
-        localStorage.setItem("user",JSON.stringify(user))
+        user.value = newUser
+        localStorage.setItem('user', JSON.stringify(user))
     }
 
     function setToken(newToken: string) {
-        token.value = newToken;
-        localStorage.setItem("userToken",newToken)
+        token.value = newToken
+        localStorage.setItem('userToken', newToken)
     }
 
     function clearToken() {
@@ -63,7 +65,6 @@ export const useUserStore = defineStore('user', () => {
         clearToken,
         clearUser,
         logout,
-        isLoggedIn
+        isLoggedIn,
     }
-
 })

@@ -8,6 +8,7 @@ interface Props {
     isOpen?: boolean
     languageId?: string
     theme?: 'light' | 'highContrast'
+    class?: string | string[] | object // 显式声明 class prop
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -25,7 +26,6 @@ onMounted(() => {
 
 const getIconName = computed(() => {
     if (!manifest.value) return ''
-
     const themeManifest = props.theme
         ? (manifest.value[props.theme] ?? manifest.value)
         : manifest.value
@@ -43,8 +43,8 @@ const getIconName = computed(() => {
     if (props.folderName) {
         return props.isOpen
             ? (themeManifest.folderNamesExpanded?.[props.folderName] ??
-                  themeManifest.folderExpanded ??
-                  '')
+                themeManifest.folderExpanded ??
+                '')
             : (themeManifest.folderNames?.[props.folderName] ?? themeManifest.folder ?? '')
     }
 
@@ -57,14 +57,17 @@ const getIconName = computed(() => {
 
 const iconPath = computed(() => {
     if (!manifest.value || !getIconName.value) return ''
-
     const iconDefinition = manifest.value.iconDefinitions?.[getIconName.value]
     if (!iconDefinition?.iconPath) return ''
-
     return `/node_modules/material-icon-theme/icons/${iconDefinition.iconPath.split('/').pop()}`
 })
 </script>
 
 <template>
-    <img v-if="iconPath" :alt="fileName || folderName || languageId" :src="iconPath" />
+    <img
+        v-if="iconPath"
+        :alt="fileName || folderName || languageId"
+        :src="iconPath"
+        :class="$props.class"
+    />
 </template>

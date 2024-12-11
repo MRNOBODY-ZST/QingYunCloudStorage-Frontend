@@ -1,6 +1,6 @@
 <template>
     <div>
-        <TransitionRoot as="template" :show="sidebarOpen">
+        <TransitionRoot :show="sidebarOpen" as="template">
             <Dialog class="relative z-50 lg:hidden" @close="sidebarOpen = false">
                 <TransitionChild
                     as="template"
@@ -36,12 +36,12 @@
                             >
                                 <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
                                     <button
-                                        type="button"
                                         class="-m-2.5 p-2.5"
+                                        type="button"
                                         @click="sidebarOpen = false"
                                     >
                                         <span class="sr-only">Close sidebar</span>
-                                        <XMarkIcon class="size-6 text-white" aria-hidden="true" />
+                                        <XMarkIcon aria-hidden="true" class="size-6 text-white" />
                                     </button>
                                 </div>
                             </TransitionChild>
@@ -51,29 +51,29 @@
                             >
                                 <div class="flex h-16 shrink-0 items-center">
                                     <img
-                                        class="h-16 w-auto mt-4"
                                         :src="piggy_happy"
                                         alt="piggy_happy"
+                                        class="h-16 w-auto mt-4"
                                     />
                                 </div>
                                 <nav class="flex flex-1 flex-col">
-                                    <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                                    <ul class="flex flex-1 flex-col gap-y-7" role="list">
                                         <li>
-                                            <ul role="list" class="-mx-2 space-y-1">
+                                            <ul class="-mx-2 space-y-1" role="list">
                                                 <li v-for="item in navigation" :key="item.name">
                                                     <a
-                                                        :href="item.href"
                                                         :class="[
                                                             item.current
                                                                 ? 'bg-gray-800 text-white'
                                                                 : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                                                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                                                         ]"
+                                                        :href="item.href"
                                                     >
                                                         <component
                                                             :is="item.icon"
-                                                            class="size-6 shrink-0"
                                                             aria-hidden="true"
+                                                            class="size-6 shrink-0"
                                                         />
                                                         {{ item.name }}
                                                     </a>
@@ -84,23 +84,34 @@
                                             <div class="text-xs/6 font-semibold text-gray-400">
                                                 文件停靠栏
                                             </div>
-                                            <ul role="list" class="-mx-2 mt-2 space-y-1">
-                                                <li v-for="file in files" :key="file.name">
+                                            <ul class="-mx-2 mt-2 space-y-1" role="list">
+                                                <li
+                                                    v-for="dockFile in dockFiles"
+                                                    :key="dockFile.objectName"
+                                                >
                                                     <a
-                                                        :href="file.href"
                                                         :class="[
-                                                            file.current
+                                                            dockFile.current
                                                                 ? 'bg-gray-800 text-white'
                                                                 : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                                                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                                                         ]"
+                                                        :href="dockFile.etag"
                                                     >
                                                         <span
                                                             class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white"
-                                                            >{{ file.initial }}</span
+                                                            >
+                                                            <MaterialIconComponent
+                                                                :file-name="dockFile.objectName"
+                                                                class="h-4"
+                                                            />
+                                                            ></span
                                                         >
                                                         <span class="truncate">{{
-                                                            file.name
+                                                            dockFile.objectName
+                                                        }}</span>
+                                                        <span class="truncate">{{
+                                                            dockFile.size
                                                         }}</span>
                                                     </a>
                                                 </li>
@@ -108,12 +119,12 @@
                                         </li>
                                         <li class="mt-auto">
                                             <a
-                                                href="#"
                                                 class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-400 hover:bg-gray-800 hover:text-white"
+                                                href="#"
                                             >
                                                 <Cog6ToothIcon
-                                                    class="size-6 shrink-0"
                                                     aria-hidden="true"
+                                                    class="size-6 shrink-0"
                                                 />
                                                 设置
                                             </a>
@@ -132,26 +143,26 @@
             <!-- Sidebar component, swap this element with another sidebar if you like -->
             <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
                 <div class="flex h-16 shrink-0 items-center">
-                    <img class="h-16 w-auto mt-4" :src="piggy_happy" alt="piggy_happy" />
+                    <img :src="piggy_happy" alt="piggy_happy" class="h-16 w-auto mt-4" />
                 </div>
                 <nav class="flex flex-1 flex-col">
-                    <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                    <ul class="flex flex-1 flex-col gap-y-7" role="list">
                         <li>
-                            <ul role="list" class="-mx-2 space-y-1">
+                            <ul class="-mx-2 space-y-1" role="list">
                                 <li v-for="item in navigation" :key="item.name">
                                     <a
-                                        :href="item.href"
                                         :class="[
                                             item.current
                                                 ? 'bg-gray-800 text-white'
                                                 : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                                         ]"
+                                        :href="item.href"
                                     >
                                         <component
                                             :is="item.icon"
-                                            class="size-6 shrink-0"
                                             aria-hidden="true"
+                                            class="size-6 shrink-0"
                                         />
                                         {{ item.name }}
                                     </a>
@@ -160,32 +171,35 @@
                         </li>
                         <li>
                             <div class="text-xs/6 font-semibold text-gray-400">文件停靠栏</div>
-                            <ul role="list" class="-mx-2 mt-2 space-y-1">
-                                <li v-for="file in files" :key="file.name">
+                            <ul class="-mx-2 mt-2 space-y-1" role="list">
+                                <li v-for="dockFile in dockFiles" :key="dockFile.objectName">
                                     <a
-                                        :href="file.href"
                                         :class="[
-                                            file.current
+                                            dockFile.current
                                                 ? 'bg-gray-800 text-white'
                                                 : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                                         ]"
+                                        :href="dockFile.etag"
                                     >
                                         <span
                                             class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white"
-                                            >{{ file.initial }}</span
-                                        >
-                                        <span class="truncate">{{ file.name }}</span>
+                                            ><MaterialIconComponent
+                                                :file-name="dockFile.objectName"
+                                            ></MaterialIconComponent
+                                        ></span>
+                                        <span class="truncate">{{ dockFile.objectName }}</span>
+                                        <span class="truncate">{{ dockFile.size }}</span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
                         <li class="mt-auto">
                             <a
-                                href="#"
                                 class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-400 hover:bg-gray-800 hover:text-white"
+                                href="#"
                             >
-                                <Cog6ToothIcon class="size-6 shrink-0" aria-hidden="true" />
+                                <Cog6ToothIcon aria-hidden="true" class="size-6 shrink-0" />
                                 设置
                             </a>
                         </li>
@@ -199,44 +213,44 @@
                 class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8"
             >
                 <button
-                    type="button"
                     class="-m-2.5 p-2.5 text-gray-700 lg:hidden"
+                    type="button"
                     @click="sidebarOpen = true"
                 >
                     <span class="sr-only">打开侧边栏</span>
-                    <Bars3Icon class="size-6" aria-hidden="true" />
+                    <Bars3Icon aria-hidden="true" class="size-6" />
                 </button>
 
                 <!-- Separator -->
-                <div class="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true" />
+                <div aria-hidden="true" class="h-6 w-px bg-gray-900/10 lg:hidden" />
 
                 <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-                    <form class="grid flex-1 grid-cols-1" action="#" method="GET">
+                    <form action="#" class="grid flex-1 grid-cols-1" method="GET">
                         <input
-                            type="search"
-                            name="search"
                             aria-label="Search"
                             class="col-start-1 row-start-1 block size-full bg-white pl-8 text-base text-gray-900 outline-none placeholder:text-gray-400 sm:text-sm/6"
+                            name="search"
                             placeholder="Search"
+                            type="search"
                         />
                         <MagnifyingGlassIcon
-                            class="pointer-events-none col-start-1 row-start-1 size-5 self-center text-gray-400"
                             aria-hidden="true"
+                            class="pointer-events-none col-start-1 row-start-1 size-5 self-center text-gray-400"
                         />
                     </form>
                     <div class="flex items-center gap-x-4 lg:gap-x-6">
                         <button
-                            type="button"
                             class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
+                            type="button"
                         >
                             <span class="sr-only">查看通知</span>
-                            <BellIcon class="size-6" aria-hidden="true" />
+                            <BellIcon aria-hidden="true" class="size-6" />
                         </button>
 
                         <!-- Separator -->
                         <div
-                            class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"
                             aria-hidden="true"
+                            class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"
                         />
 
                         <!-- Profile dropdown -->
@@ -244,19 +258,19 @@
                             <MenuButton class="-m-1.5 flex items-center p-1.5">
                                 <span class="sr-only">打开个人资料</span>
                                 <img
-                                    class="size-8 rounded-full bg-gray-50"
-                                    :src=user?.userPict
+                                    :src="user?.userPict"
                                     alt=""
+                                    class="size-8 rounded-full bg-gray-50"
                                 />
                                 <span class="hidden lg:flex lg:items-center">
                                     <span
-                                        class="ml-4 text-sm/6 font-semibold text-gray-900"
                                         aria-hidden="true"
+                                        class="ml-4 text-sm/6 font-semibold text-gray-900"
                                         >{{ user?.username }}</span
                                     >
                                     <ChevronDownIcon
-                                        class="ml-2 size-5 text-gray-400"
                                         aria-hidden="true"
+                                        class="ml-2 size-5 text-gray-400"
                                     />
                                 </span>
                             </MenuButton>
@@ -277,11 +291,11 @@
                                         v-slot="{ active }"
                                     >
                                         <a
-                                            :href="item.href"
                                             :class="[
                                                 active ? 'bg-gray-50 outline-none' : '',
                                                 'block px-3 py-1 text-sm/6 text-gray-900',
                                             ]"
+                                            :href="item.href"
                                             >{{ item.name }}</a
                                         >
                                     </MenuItem>
@@ -292,7 +306,7 @@
                 </div>
             </div>
 
-            <main class="py-10 h-dvh">
+            <main class="py-8 h-dvh">
                 <div class="px-4 sm:px-6 lg:px-8">
                     <slot></slot>
                 </div>
@@ -301,7 +315,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import {
     Dialog,
@@ -311,23 +325,25 @@ import {
     MenuItem,
     MenuItems,
     TransitionChild,
-    TransitionRoot
+    TransitionRoot,
 } from '@headlessui/vue'
 import {
     Bars3Icon,
     BellIcon,
+    ClockIcon,
     Cog6ToothIcon,
     FolderIcon,
     HomeIcon,
+    ShareIcon,
     UserIcon,
     XMarkIcon,
-    ClockIcon,
-    ShareIcon
 } from '@heroicons/vue/24/outline'
 import piggy_happy from '@/assets/image/piggy/piggy_happy.gif'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 import type { User } from '@/stores/userStore.ts'
 import { useUserStore } from '@/stores/userStore.ts'
+import type { File } from '@/views/FileView.vue'
+import MaterialIconComponent from '@/components/MaterialIconComponent.vue'
 
 const userStore = useUserStore()
 const user = ref<User | null>(userStore.user)
@@ -337,16 +353,30 @@ const navigation = [
     { name: '文件', href: '#', icon: FolderIcon, current: false },
     { name: '最近使用', href: '#', icon: ClockIcon, current: false },
     { name: '分享', href: '#', icon: ShareIcon, current: false },
-    { name: '个人中心', href: '#', icon: UserIcon, current: false }
+    { name: '个人中心', href: '#', icon: UserIcon, current: false },
 ]
-const files = [
-    { id: 1, name: 'Heroicons', href: '#', initial: 'H', current: false },
-    { id: 2, name: 'Tailwind Labs', href: '#', initial: 'T', current: false },
-    { id: 3, name: 'Workcation', href: '#', initial: 'W', current: false }
-]
+
+interface DockFile extends File {
+    current?: boolean
+}
+
+const dockFiles = ref<DockFile[] | null>([
+    {
+        id: '1',
+        userId: '1',
+        parentId: '0',
+        objectName: 'IMG_4985.HEIC',
+        etag: '3bbe70393ebd16ee5f9d0133d6957feb',
+        size: '62.1 KiB',
+        contentType: 'application/octet-stream',
+        createTime: Date.now(),
+        updateTime: Date.now(),
+        current: false,
+    },
+])
 const userNavigation = [
     { name: '个人资料', href: '#' },
-    { name: '登出', href: '#' }
+    { name: '登出', href: '#' },
 ]
 
 const sidebarOpen = ref(false)
