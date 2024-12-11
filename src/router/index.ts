@@ -19,9 +19,36 @@ const router = createRouter({
             component: () => import('@/views/RegisterView.vue'),
         },
         {
-            name: 'home',
-            path: '/home',
-            component: () => import('@/views/HomeView.vue'),
+            name: 'sidebar',
+            path: '/sidebar',
+            component: () => import('@/components/SidebarComponent.vue'),
+            children: [
+                {
+                    name: 'home',
+                    path: '/home',
+                    component: () => import('@/views/HomeView.vue'),
+                },
+                {
+                    name: 'file',
+                    path: '/file',
+                    component: () => import('@/views/FileView.vue'),
+                },
+                {
+                    name: 'recent',
+                    path: '/recent',
+                    component: () => import('@/views/RecentView.vue'),
+                },
+                {
+                    name: 'user',
+                    path: '/user',
+                    component: () => import('@/views/UserView.vue'),
+                },
+                {
+                    name: 'share',
+                    path: '/share',
+                    component: () => import('@/views/ShareView.vue'),
+                },
+            ],
         },
     ],
 })

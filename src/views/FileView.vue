@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ImageGridListComponent from '@/components/ImageGridListComponent.vue'
 
 export interface File {
     id ?: string,
@@ -15,7 +16,7 @@ export interface File {
 </script>
 
 <template>
-
+    <ImageGridListComponent/>
 </template>
 
 <style scoped>

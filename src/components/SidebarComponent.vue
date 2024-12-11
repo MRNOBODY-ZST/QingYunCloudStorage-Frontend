@@ -61,22 +61,23 @@
                                         <li>
                                             <ul class="-mx-2 space-y-1" role="list">
                                                 <li v-for="item in navigation" :key="item.name">
-                                                    <a
-                                                        :class="[
-                                                            item.current
-                                                                ? 'bg-gray-800 text-white'
-                                                                : 'text-gray-400 hover:bg-gray-800 hover:text-white',
-                                                            'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
-                                                        ]"
-                                                        :href="item.href"
-                                                    >
-                                                        <component
-                                                            :is="item.icon"
-                                                            aria-hidden="true"
-                                                            class="size-6 shrink-0"
-                                                        />
-                                                        {{ item.name }}
-                                                    </a>
+                                                    <RouterLink :to="item.href">
+                                                        <a
+                                                            :class="[
+                                                                item.current
+                                                                    ? 'bg-gray-800 text-white'
+                                                                    : 'text-gray-400 hover:bg-gray-800 hover:text-white',
+                                                                'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
+                                                            ]"
+                                                        >
+                                                            <component
+                                                                :is="item.icon"
+                                                                aria-hidden="true"
+                                                                class="size-6 shrink-0"
+                                                            />
+                                                            {{ item.name }}
+                                                        </a>
+                                                    </RouterLink>
                                                 </li>
                                             </ul>
                                         </li>
@@ -100,7 +101,7 @@
                                                     >
                                                         <span
                                                             class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white"
-                                                            >
+                                                        >
                                                             <MaterialIconComponent
                                                                 :file-name="dockFile.objectName"
                                                                 class="h-4"
@@ -308,7 +309,21 @@
 
             <main class="py-8 h-dvh">
                 <div class="px-4 sm:px-6 lg:px-8">
-                    <slot></slot>
+                    <KeepAlive>
+                        <RouterView v-slot="{ Component }">
+                            <Transition
+                                enter-active-class="transition-opacity duration-150 ease-out"
+                                enter-from-class="opacity-0"
+                                enter-to-class="opacity-100"
+                                leave-active-class="transition-opacity duration-150 ease-in"
+                                leave-from-class="opacity-100"
+                                leave-to-class="opacity-0"
+                                mode="out-in"
+                            >
+                                <component :is="Component" :key="$route.path" />
+                            </Transition>
+                        </RouterView>
+                    </KeepAlive>
                 </div>
             </main>
         </div>
@@ -316,7 +331,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import {
     Dialog,
     DialogPanel,
@@ -344,17 +359,19 @@ import type { User } from '@/stores/userStore.ts'
 import { useUserStore } from '@/stores/userStore.ts'
 import type { File } from '@/views/FileView.vue'
 import MaterialIconComponent from '@/components/MaterialIconComponent.vue'
+import { useRoute } from 'vue-router'
 
 const userStore = useUserStore()
+const route = useRoute()
 const user = ref<User | null>(userStore.user)
 
-const navigation = [
-    { name: '主页', href: '#', icon: HomeIcon, current: true },
-    { name: '文件', href: '#', icon: FolderIcon, current: false },
-    { name: '最近使用', href: '#', icon: ClockIcon, current: false },
-    { name: '分享', href: '#', icon: ShareIcon, current: false },
-    { name: '个人中心', href: '#', icon: UserIcon, current: false },
-]
+const navigation = ref([
+    { name: '主页', href: 'home', icon: HomeIcon, current: true },
+    { name: '文件', href: 'file', icon: FolderIcon, current: false },
+    { name: '最近使用', href: 'recent', icon: ClockIcon, current: false },
+    { name: '分享', href: 'share', icon: ShareIcon, current: false },
+    { name: '个人中心', href: 'user', icon: UserIcon, current: false },
+])
 
 interface DockFile extends File {
     current?: boolean
@@ -380,6 +397,14 @@ const userNavigation = [
 ]
 
 const sidebarOpen = ref(false)
+
+const updateCurrentPage = () => {
+    navigation.value.forEach((item) => {
+        item.current = route.path.split('/')[1] === item.href
+    })
+}
+
+watch(() => route.path, updateCurrentPage, { immediate: true })
 </script>
 
 <style scoped></style>

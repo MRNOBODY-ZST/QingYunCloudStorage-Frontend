@@ -68,6 +68,5 @@ const iconPath = computed(() => {
         v-if="iconPath"
         :alt="fileName || folderName || languageId"
         :src="iconPath"
-        :class="$props.class"
     />
 </template>
