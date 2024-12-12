@@ -14,7 +14,7 @@ export interface User {
 }
 
 export const useUserStore = defineStore('user', () => {
-    const token = ref<string | null>(localStorage.getItem('user'))
+    const token = ref<string | null>(localStorage.getItem('userToken'))
     const user = ref<User | null>(
         (() => {
             const storedUser = localStorage.getItem('user')
@@ -34,7 +34,7 @@ export const useUserStore = defineStore('user', () => {
 
     function setUser(newUser: User) {
         user.value = newUser
-        localStorage.setItem('user', JSON.stringify(user))
+        localStorage.setItem('user', JSON.stringify(user.value))
     }
 
     function setToken(newToken: string) {

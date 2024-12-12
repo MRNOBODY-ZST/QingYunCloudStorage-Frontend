@@ -52,8 +52,13 @@
                                 <div class="h-full overflow-y-auto bg-white p-8">
                                     <div class="space-y-6 pb-16">
                                         <div>
-                                            <div class="flex aspect-[10/7] w-full rounded-lg object-cover items-center justify-center">
-                                                <MaterialIconComponent :file-name="props.file?.objectName" class="h-2/3"/>
+                                            <div
+                                                class="flex aspect-[10/7] w-full rounded-lg object-cover items-center justify-center"
+                                            >
+                                                <MaterialIconComponent
+                                                    :file-name="props.file?.objectName"
+                                                    class="h-2/3"
+                                                />
                                             </div>
                                             <div class="mt-4 flex items-start justify-between">
                                                 <div>
@@ -95,7 +100,11 @@
                                                 >
                                                     <dt class="text-gray-500">创建于</dt>
                                                     <dd class="text-gray-900">
-                                                        {{ props.file!.createTime!.toLocaleDateString('zh-CN') }}
+                                                        {{
+                                                            props.file!.createTime!.toLocaleDateString(
+                                                                'zh-CN',
+                                                            )
+                                                        }}
                                                     </dd>
                                                 </div>
                                                 <div
@@ -103,7 +112,11 @@
                                                 >
                                                     <dt class="text-gray-500">上次修改</dt>
                                                     <dd class="text-gray-900">
-                                                        {{ props.file!.updateTime!.toLocaleDateString('zh-CN') }}
+                                                        {{
+                                                            props.file!.updateTime!.toLocaleDateString(
+                                                                'zh-CN',
+                                                            )
+                                                        }}
                                                     </dd>
                                                 </div>
                                                 <div
@@ -171,14 +184,16 @@
                                             <button
                                                 class="flex-1 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                                 type="button"
+                                                @click="handleDownload"
                                             >
-                                                Download
+                                                下载
                                             </button>
                                             <button
                                                 class="ml-3 flex-1 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                                                 type="button"
+                                                @click="handleDelete"
                                             >
-                                                Delete
+                                                删除
                                             </button>
                                         </div>
                                     </div>
@@ -199,6 +214,8 @@ import { PencilIcon, PlusIcon } from '@heroicons/vue/20/solid'
 import type { File } from '@/views/FileView.vue'
 import { formatSize } from '@/views/FileView.vue'
 import MaterialIconComponent from '@/components/MaterialIconComponent.vue'
+import { useUserStore } from '@/stores/userStore'
+import axios from 'axios'
 
 interface Props {
     file?: File
@@ -206,11 +223,65 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const emit = defineEmits(['close', 'fileDeleted'])
+const userStore = useUserStore()
 
-const emit = defineEmits(['close'])
+// 删除文件
+const handleDelete = async () => {
+    if (!props.file?.objectName || !props.file?.parentId) return
+
+    try {
+        await axios.delete('http://localhost:8080/api/file', {
+            headers: {
+                Authorization: userStore.token,
+            },
+            params: {
+                filename: props.file.objectName,
+                parentId: props.file.parentId,
+            },
+        })
+        emit('fileDeleted') // 通知父组件文件已删除
+        emit('close') // 关闭抽屉
+    } catch (error) {
+        console.error('Error deleting file:', error)
+        // 这里可以添加错误提示
+    }
+}
+
+// 下载文件
+const handleDownload = async () => {
+    if (!props.file?.objectName || !props.file?.parentId) return
+
+    try {
+        const response = await axios.get('http://localhost:8080/api/file/download', {
+            headers: {
+                Authorization: userStore.token,
+            },
+            params: {
+                filename: props.file.objectName,
+                parentId: props.file.parentId,
+            },
+            responseType: 'blob', // 重要：设置响应类型为blob
+        })
+
+        // 创建下载链接
+        const url = window.URL.createObjectURL(new Blob([response.data]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', props.file.objectName)
+        document.body.appendChild(link)
+        link.click()
+
+        // 清理
+        link.parentNode?.removeChild(link)
+        window.URL.revokeObjectURL(url)
+    } catch (error) {
+        console.error('Error downloading file:', error)
+        // 这里可以添加错误提示
+    }
+}
 
 const emitClose = () => {
     emit('close')
 }
-
 </script>

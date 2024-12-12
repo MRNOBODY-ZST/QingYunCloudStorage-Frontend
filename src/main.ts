@@ -1,14 +1,16 @@
 import 'tailwindcss/tailwind.css'
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-
 import App from './App.vue'
 import router from './router'
+import { createPinia } from 'pinia'
+import { createApp } from 'vue'
+import { useUserStore } from '@/stores/userStore'
 
-const app = createApp(App)
+const pinia = createPinia()
+const app = createApp(App).use(router).use(pinia).mount('#app')
 
-app.use(createPinia())
-app.use(router)
+const userStore = useUserStore()
 
-app.mount('#app')
+if (!userStore.isLoggedIn) {
+    router.push('/login')
+}

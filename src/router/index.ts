@@ -34,6 +34,11 @@ const router = createRouter({
                     component: () => import('@/views/FileView.vue'),
                 },
                 {
+                    name: 'file_parent_id',
+                    path: '/file/:parentId',
+                    component: () => import('@/views/FileView.vue'),
+                },
+                {
                     name: 'recent',
                     path: '/recent',
                     component: () => import('@/views/RecentView.vue'),
