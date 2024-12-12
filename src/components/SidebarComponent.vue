@@ -187,8 +187,9 @@
                                             class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white"
                                             ><MaterialIconComponent
                                                 :file-name="dockFile.objectName"
-                                            ></MaterialIconComponent
-                                        ></span>
+                                                class="h-4"
+                                            />
+                                        </span>
                                         <span class="truncate">{{ dockFile.objectName }}</span>
                                         <span class="truncate">{{ dockFile.size }}</span>
                                     </a>
@@ -307,23 +308,13 @@
                 </div>
             </div>
 
-            <main class="py-8 h-dvh">
+            <main class="py-8 h-max">
                 <div class="px-4 sm:px-6 lg:px-8">
-                    <KeepAlive>
-                        <RouterView v-slot="{ Component }">
-                            <Transition
-                                enter-active-class="transition-opacity duration-150 ease-out"
-                                enter-from-class="opacity-0"
-                                enter-to-class="opacity-100"
-                                leave-active-class="transition-opacity duration-150 ease-in"
-                                leave-from-class="opacity-100"
-                                leave-to-class="opacity-0"
-                                mode="out-in"
-                            >
-                                <component :is="Component" :key="$route.path" />
-                            </Transition>
-                        </RouterView>
-                    </KeepAlive>
+                    <RouterView v-slot="{ Component }">
+                        <KeepAlive>
+                            <Component :is="Component" :key="$route.path" />
+                        </KeepAlive>
+                    </RouterView>
                 </div>
             </main>
         </div>
@@ -382,12 +373,12 @@ const dockFiles = ref<DockFile[] | null>([
         id: '1',
         userId: '1',
         parentId: '0',
-        objectName: 'IMG_4985.HEIC',
+        objectName: 'IMG_4985.heic',
         etag: '3bbe70393ebd16ee5f9d0133d6957feb',
         size: '62.1 KiB',
         contentType: 'application/octet-stream',
-        createTime: Date.now(),
-        updateTime: Date.now(),
+        createTime: new Date(),
+        updateTime: new Date(),
         current: false,
     },
 ])

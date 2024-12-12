@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import { generateManifest, type Manifest } from 'material-icon-theme'
+import { generateManifest, type Manifest, type ManifestConfig } from 'material-icon-theme'
 
 interface Props {
     fileName?: string
@@ -8,7 +8,6 @@ interface Props {
     isOpen?: boolean
     languageId?: string
     theme?: 'light' | 'highContrast'
-    class?: string | string[] | object // 显式声明 class prop
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -18,55 +17,51 @@ const props = withDefaults(defineProps<Props>(), {
 const manifest = ref<Manifest | null>(null)
 
 onMounted(() => {
-    manifest.value = generateManifest({
+    const config: ManifestConfig = {
         activeIconPack: 'vue',
         hidesExplorerArrows: false,
-    })
+    }
+
+    manifest.value = generateManifest(config)
 })
 
-const getIconName = computed(() => {
+const getIconName = computed((): string => {
     if (!manifest.value) return ''
-    const themeManifest = props.theme
-        ? (manifest.value[props.theme] ?? manifest.value)
+
+    let iconName = ''
+    const themeManifest: Manifest = props.theme
+        ? manifest.value[props.theme] || manifest.value
         : manifest.value
 
     if (props.fileName) {
         const extension = props.fileName.split('.').pop() || ''
-        return (
-            themeManifest.fileExtensions?.[extension] ??
-            themeManifest.fileNames?.[props.fileName] ??
-            themeManifest.file ??
+        iconName =
+            themeManifest.fileExtensions?.[extension] ||
+            themeManifest.fileNames?.[props.fileName] ||
+            themeManifest.file ||
             ''
-        )
+    } else if (props.folderName) {
+        iconName = props.isOpen
+            ? themeManifest.folderNamesExpanded?.[props.folderName] ||
+              themeManifest.folderExpanded ||
+              ''
+            : themeManifest.folderNames?.[props.folderName] || themeManifest.folder || ''
+    } else if (props.languageId) {
+        iconName = themeManifest.languageIds?.[props.languageId] || themeManifest.file || ''
     }
 
-    if (props.folderName) {
-        return props.isOpen
-            ? (themeManifest.folderNamesExpanded?.[props.folderName] ??
-                themeManifest.folderExpanded ??
-                '')
-            : (themeManifest.folderNames?.[props.folderName] ?? themeManifest.folder ?? '')
-    }
-
-    if (props.languageId) {
-        return themeManifest.languageIds?.[props.languageId] ?? themeManifest.file ?? ''
-    }
-
-    return ''
+    return iconName
 })
 
 const iconPath = computed(() => {
     if (!manifest.value || !getIconName.value) return ''
     const iconDefinition = manifest.value.iconDefinitions?.[getIconName.value]
-    if (!iconDefinition?.iconPath) return ''
-    return `/node_modules/material-icon-theme/icons/${iconDefinition.iconPath.split('/').pop()}`
+    if (!iconDefinition) return ''
+    const iconFileName = iconDefinition.iconPath.split('/').pop()
+    return `/node_modules/material-icon-theme/icons/${iconFileName}`
 })
 </script>
 
 <template>
-    <img
-        v-if="iconPath"
-        :alt="fileName || folderName || languageId"
-        :src="iconPath"
-    />
+    <img v-if="iconPath" :alt="fileName || folderName || languageId" :src="iconPath"/>
 </template>
