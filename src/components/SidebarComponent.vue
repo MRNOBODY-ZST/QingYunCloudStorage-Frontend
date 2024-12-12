@@ -260,9 +260,10 @@
                             <MenuButton class="-m-1.5 flex items-center p-1.5">
                                 <span class="sr-only">打开个人资料</span>
                                 <img
-                                    :src="user?.userPict"
-                                    alt=""
+                                    :src="getAvatarSrc"
+                                    alt="User avatar"
                                     class="size-8 rounded-full bg-gray-50"
+                                    @error="avatarUrl = ''"
                                 />
                                 <span class="hidden lg:flex lg:items-center">
                                     <span
@@ -297,7 +298,7 @@
                                                 active ? 'bg-gray-50 outline-none' : '',
                                                 'block px-3 py-1 text-sm/6 text-gray-900',
                                             ]"
-                                            :href="item.href"
+                                            :href="item.to"
                                             >{{ item.name }}</a
                                         >
                                     </MenuItem>
@@ -322,7 +323,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import {
     Dialog,
     DialogPanel,
@@ -351,10 +352,21 @@ import { useUserStore } from '@/stores/userStore.ts'
 import type { File } from '@/views/FileView.vue'
 import MaterialIconComponent from '@/components/MaterialIconComponent.vue'
 import { useRoute } from 'vue-router'
+import axios from 'axios'
 
 const userStore = useUserStore()
 const route = useRoute()
-const user = ref<User | null>(userStore.user)
+const user = ref<User | null>(userStore.user) // Initialize as null
+const avatarUrl = ref<string>('')
+
+const initializeUser = () => {
+    user.value = userStore.user
+    if (user.value?.userImage) {
+        fetchAvatarUrl()
+    }
+}
+
+console.log(user.value)
 
 const navigation = ref([
     { name: '主页', href: 'home', icon: HomeIcon, current: true },
@@ -367,6 +379,41 @@ const navigation = ref([
 interface DockFile extends File {
     current?: boolean
 }
+
+// 添加获取头像URL的函数
+const fetchAvatarUrl = async () => {
+    try {
+        const response = await axios.get(`http://localhost:8080/api/file/avatar`, {
+            params: { "etag": user.value!.userImage },
+            headers: { Authorization: userStore.token },
+        })
+        avatarUrl.value = response.data.data
+        console.log(avatarUrl.value);
+    } catch (error) {
+        console.error('Error fetching avatar URL:', error)
+        avatarUrl.value = '' // Reset on error
+    }
+}
+
+// 添加 watcher 来监听用户头像变化
+watch(
+    () => userStore.user,
+    (newUser) => {
+        user.value = newUser
+        if (newUser?.userImage) {
+            fetchAvatarUrl()
+        }
+    },
+    { immediate: true },
+)
+
+onMounted(() => {
+    initializeUser()
+})
+
+const getAvatarSrc = computed(() => {
+    return avatarUrl.value || user.value?.userImage || ''
+})
 
 const dockFiles = ref<DockFile[] | null>([
     {
@@ -383,8 +430,8 @@ const dockFiles = ref<DockFile[] | null>([
     },
 ])
 const userNavigation = [
-    { name: '个人资料', href: '#' },
-    { name: '登出', href: '#' },
+    { name: '个人资料', to: '#' },
+    { name: '登出', to: '#' },
 ]
 
 const sidebarOpen = ref(false)
@@ -394,6 +441,8 @@ const updateCurrentPage = () => {
         item.current = route.path.split('/')[1] === item.href
     })
 }
+
+fetchAvatarUrl()
 
 watch(() => route.path, updateCurrentPage, { immediate: true })
 </script>

@@ -145,7 +145,7 @@ const stats = [
 
 <template>
     <div>
-        <h3 class="text-base font-semibold text-gray-900">Last 30 days</h3>
+        <h3 class="text-base font-semibold text-gray-900">在过去的30天中</h3>
 
         <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             <div
@@ -185,7 +185,7 @@ const stats = [
                     <div class="absolute inset-x-0 bottom-0 bg-gray-50 px-4 py-4 sm:px-6">
                         <div class="text-sm">
                             <a class="font-medium text-indigo-600 hover:text-indigo-500" href="#"
-                                >View all<span class="sr-only"> {{ item.name }} stats</span></a
+                                >查看<span class="sr-only"> {{ item.name }} stats</span></a
                             >
                         </div>
                     </div>

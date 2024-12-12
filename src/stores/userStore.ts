@@ -5,7 +5,7 @@ export interface User {
     id?: string
     uuid?: string
     username?: string
-    userPict?: string
+    userImage?: string
     email?: string
     role?: string
     status?: string

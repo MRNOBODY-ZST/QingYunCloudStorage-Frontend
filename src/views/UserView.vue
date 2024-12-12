@@ -13,7 +13,7 @@
                     <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
                         <div class="col-span-full flex items-center gap-x-8">
                             <img
-                                :src="userForm.userPict"
+                                :src="userForm.userImage"
                                 alt=""
                                 class="size-24 flex-none rounded-lg bg-gray-100 object-cover"
                             />
@@ -108,6 +108,7 @@ import type { User } from '@/stores/userStore'
 import { useUserStore } from '@/stores/userStore'
 import axios from 'axios'
 
+
 const userStore = useUserStore()
 const fileInput = ref<HTMLInputElement | null>(null)
 const uploadMessage = ref('')
@@ -121,7 +122,7 @@ const userForm = reactive<User>({
     id: userStore.user?.id,
     username: userStore.user?.username || '',
     email: userStore.user?.email || '',
-    userPict: userStore.user?.userPict || '',
+    userImage: userStore.user?.userImage || '',
 })
 
 // 初始化表单数据
@@ -131,7 +132,7 @@ onMounted(() => {
             id: userStore.user.id,
             username: userStore.user.username,
             email: userStore.user.email,
-            userPict: userStore.user.userPict,
+            userImage: userStore.user.userImage,
         })
     }
 })
@@ -185,7 +186,7 @@ const handleFileChange = async (event: Event) => {
                     },
                 )
                 if (avatarResponse.data.code === 200) {
-                    userForm.userPict = avatarResponse.data.data
+                    userForm.userImage = avatarResponse.data.data
                     // 立即更新用户信息
                     await updateProfile()
                 } else {
@@ -219,7 +220,7 @@ const updateProfile = async () => {
                 id: userForm.id,
                 username: userForm.username,
                 email: userForm.email,
-                userPict: userForm.userPict,
+                userPict: userForm.userImage,
             },
         })
 
