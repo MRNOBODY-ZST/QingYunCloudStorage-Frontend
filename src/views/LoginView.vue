@@ -168,5 +168,8 @@
 </template>
 
 <script lang="ts" setup>
+import axios from 'axios'
 import piggyHappy from '@/assets/image/piggy/piggy_happy.gif'
+
+
 </script>

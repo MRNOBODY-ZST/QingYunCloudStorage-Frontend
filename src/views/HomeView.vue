@@ -1,11 +1,124 @@
 <script lang="ts" setup>
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/vue/20/solid'
 import { CursorArrowRaysIcon, EnvelopeOpenIcon, UsersIcon } from '@heroicons/vue/24/outline'
+import { onMounted, ref } from 'vue'
+import * as echarts from 'echarts'
+
+const chartRef = ref()
+
+// 生成过去30天的日期数组
+const generateDates = () => {
+    const dates = []
+    const today = new Date()
+    for (let i = 29; i >= 0; i--) {
+        const date = new Date(today)
+        date.setDate(today.getDate() - i)
+        dates.push(date.toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' }))
+    }
+    return dates
+}
+
+// 模拟数据
+const uploadData = Array.from({ length: 30 }, () => Math.floor(Math.random() * 500 + 1000))
+const downloadData = Array.from({ length: 30 }, () => Math.floor(Math.random() * 800 + 1500))
+const shareData = Array.from({ length: 30 }, () => Math.floor(Math.random() * 300 + 500))
+
+onMounted(() => {
+    const chart = echarts.init(chartRef.value)
+
+    const option = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        legend: {
+            data: ['上传数量', '下载数量', '分享数量'],
+            top: 10,
+            textStyle: {
+                fontSize: 16,  // 这里可以调整图例文字大小
+                fontWeight: 'bold'  // 可以设置为 'normal', 'bold', 'bolder'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: generateDates(),
+            axisLabel: {
+                rotate: 45
+            }
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '上传数量',
+                type: 'line',
+                smooth: true,
+                data: uploadData,
+                itemStyle: {
+                    color: '#6366f1' // Tailwind indigo-500
+                },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: '#6366f1' }, // indigo-500
+                        { offset: 1, color: 'rgba(99, 102, 241, 0.1)' }
+                    ])
+                }
+            },
+            {
+                name: '下载数量',
+                type: 'line',
+                smooth: true,
+                data: downloadData,
+                itemStyle: {
+                    color: '#22c55e' // Tailwind green-500
+                },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: '#22c55e' }, // green-500
+                        { offset: 1, color: 'rgba(34, 197, 94, 0.1)' }
+                    ])
+                }
+            },
+            {
+                name: '分享数量',
+                type: 'line',
+                smooth: true,
+                data: shareData,
+                itemStyle: {
+                    color: '#ef4444' // Tailwind red-500
+                },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: '#ef4444' }, // red-500
+                        { offset: 1, color: 'rgba(239, 68, 68, 0.1)' }
+                    ])
+                }
+            }
+        ]
+    }
+
+    chart.setOption(option)
+
+    // 响应式处理
+    window.addEventListener('resize', () => {
+        chart.resize()
+    })
+})
 
 const stats = [
     {
         id: 1,
-        name: 'Total Subscribers',
+        name: '总文件数',
         stat: '71,897',
         icon: UsersIcon,
         change: '122',
@@ -13,7 +126,7 @@ const stats = [
     },
     {
         id: 2,
-        name: 'Avg. Open Rate',
+        name: '总下载数',
         stat: '58.16%',
         icon: EnvelopeOpenIcon,
         change: '5.4%',
@@ -21,7 +134,7 @@ const stats = [
     },
     {
         id: 3,
-        name: 'Avg. Click Rate',
+        name: '总分享数',
         stat: '24.57%',
         icon: CursorArrowRaysIcon,
         change: '3.2%',
@@ -79,6 +192,9 @@ const stats = [
                 </dd>
             </div>
         </dl>
+    </div>
+    <div class="mt-8">
+        <div ref="chartRef" class="w-full h-[400px]"></div>
     </div>
 </template>
 

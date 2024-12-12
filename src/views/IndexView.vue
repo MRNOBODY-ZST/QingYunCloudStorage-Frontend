@@ -3,10 +3,10 @@
         <header class="absolute inset-x-0 top-0 z-50">
             <nav aria-label="Global" class="flex items-center justify-between p-6 lg:px-8">
                 <div class="flex lg:flex-1">
-                    <a class="-m-1.5 p-1.5" href="#">
+                    <RouterLink class="-m-1.5 p-1.5" to="/">
                         <span class="sr-only">piggy_happy</span>
                         <img :src="piggy_happy" alt="piggy_happy" class="h-20 w-auto" />
-                    </a>
+                    </RouterLink>
                 </div>
                 <div class="flex lg:hidden">
                     <button
@@ -28,8 +28,8 @@
                     >
                 </div>
                 <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <a class="text-sm/6 font-semibold text-gray-900" href="#"
-                        >登录 <span aria-hidden="true">&rarr;</span></a
+                    <RouterLink class="text-sm/6 font-semibold text-gray-900" to="login"
+                        >登录 <span aria-hidden="true">&rarr;</span></RouterLink
                     >
                 </div>
             </nav>
@@ -127,20 +127,20 @@
                         青云网盘是一个基于SpringBoot框架开发的现代化云存储系统，为用户提供安全、高效的文件存储和管理服务。系统采用分布式架构设计，确保高可用性和可扩展性。
                     </p>
                     <div class="mt-10 flex items-center justify-center gap-x-6">
-                        <a
+                        <RouterLink
                             class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            href="#"
-                            >登录</a
-                        >
-                        <a class="text-sm/6 font-semibold text-gray-900" href="#"
-                            >注册 <span aria-hidden="true">→</span></a
+                            to="login"
+                            >登录
+                        </RouterLink>
+                        <RouterLink class="text-sm/6 font-semibold text-gray-900" to="register"
+                            >注册 <span aria-hidden="true">→</span></RouterLink
                         >
                     </div>
                 </div>
             </div>
             <div
-                class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
                 aria-hidden="true"
+                class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
             >
                 <div
                     class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-p bg-gradient-to-tr from-[#f9a8d4] to-[#ec4899] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
@@ -170,7 +170,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { Dialog, DialogPanel } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
